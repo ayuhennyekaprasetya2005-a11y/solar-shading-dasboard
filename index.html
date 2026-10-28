@@ -1,0 +1,235 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solar Shading Monitor</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-mark">☀</div>
+      <div class="brand-copy">
+        <p class="eyebrow">PEMANTAUAN ENERGI SURYA</p>
+        <h1>Solar Shading Monitor</h1>
+        <p class="subtitle">Perbandingan panel referensi dan panel uji</p>
+      </div>
+      <div class="connection-pill" id="connectionStatus">
+        <span class="status-dot"></span>
+        <span id="connectionText">Mode simulasi</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="section-heading">
+        <div>
+          <p class="eyebrow">RINGKASAN SISTEM</p>
+          <h2>Kondisi Kedua Panel</h2>
+        </div>
+        <p class="updated">Pembaruan terakhir:
+          <strong id="lastUpdate">—</strong>
+        </p>
+      </section>
+
+      <section class="panel-grid">
+        <article class="panel-card reference-card">
+          <div class="panel-card-head">
+            <div class="panel-icon">A</div>
+            <div>
+              <p class="card-kicker">PANEL REFERENSI</p>
+              <h3>Panel Sehat</h3>
+            </div>
+            <span class="tag tag-green">Tanpa shading</span>
+          </div>
+
+          <div class="primary-metric">
+            <span class="metric-label">Daya</span>
+            <div><span id="powerA">—</span><small> W</small></div>
+          </div>
+
+          <div class="metric-grid">
+            <div class="metric-tile">
+              <span>Tegangan</span>
+              <strong><span id="voltageA">—</span> <small>V</small></strong>
+            </div>
+            <div class="metric-tile">
+              <span>Arus</span>
+              <strong><span id="currentA">—</span> <small>A</small></strong>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel-card test-card">
+          <div class="panel-card-head">
+            <div class="panel-icon">B</div>
+            <div>
+              <p class="card-kicker">PANEL PENGUJIAN</p>
+              <h3>Panel Uji</h3>
+            </div>
+            <span class="tag tag-orange">Area uji shading</span>
+          </div>
+
+          <div class="primary-metric">
+            <span class="metric-label">Daya</span>
+            <div><span id="powerB">—</span><small> W</small></div>
+          </div>
+
+          <div class="metric-grid">
+            <div class="metric-tile">
+              <span>Tegangan</span>
+              <strong><span id="voltageB">—</span> <small>V</small></strong>
+            </div>
+            <div class="metric-tile">
+              <span>Arus</span>
+              <strong><span id="currentB">—</span> <small>A</small></strong>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="analysis-grid">
+        <article class="surface-card comparison-card">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">ANALISIS PERBANDINGAN</p>
+              <h2>Selisih Daya Panel</h2>
+            </div>
+            <span class="tag" id="dropTag">Menunggu data</span>
+          </div>
+
+          <div class="drop-summary">
+            <div>
+              <span class="metric-label">Penurunan daya panel uji</span>
+              <div class="drop-value">
+                <span id="powerDrop">—</span><small>%</small>
+              </div>
+            </div>
+            <p id="diagnosis" class="diagnosis">
+              Menunggu data kedua panel.
+            </p>
+          </div>
+
+          <div class="bar-comparison">
+            <div class="bar-row">
+              <div class="bar-label">
+                <span>Panel A · Referensi</span>
+                <strong id="barPowerA">— W</strong>
+              </div>
+              <div class="bar-track">
+                <div id="barA" class="bar-fill bar-fill-green"></div>
+              </div>
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-label">
+                <span>Panel B · Uji</span>
+                <strong id="barPowerB">— W</strong>
+              </div>
+              <div class="bar-track">
+                <div id="barB" class="bar-fill bar-fill-orange"></div>
+              </div>
+            </div>
+          </div>
+
+          <p class="small-note">
+            Penurunan dihitung terhadap Panel A. Perbedaan daya merupakan
+            indikasi awal, bukan bukti tunggal adanya shading.
+          </p>
+        </article>
+
+        <article class="surface-card temperature-card">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">PEMANTAUAN SUHU</p>
+              <h2>Suhu Panel Uji</h2>
+            </div>
+            <span class="temperature-icon">℃</span>
+          </div>
+
+          <div class="temperature-value">
+            <span id="temperatureB">—</span><small>°C</small>
+          </div>
+
+          <p class="temperature-description">
+            DS18B20 dipasang di bagian belakang panel uji,
+            tepat di belakang area yang diamati.
+          </p>
+
+          <div class="temperature-status" id="temperatureStatus">
+            <span class="status-dot"></span>
+            Menunggu data suhu
+          </div>
+        </article>
+      </section>
+
+      <section class="charts-grid">
+        <article class="surface-card chart-card">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">TREN PENGUKURAN</p>
+              <h2>Perbandingan Daya</h2>
+            </div>
+            <span class="chart-legend">
+              <i class="legend-green"></i> Panel A
+              <i class="legend-orange"></i> Panel B
+            </span>
+          </div>
+          <canvas id="powerChart" aria-label="Grafik perbandingan daya"></canvas>
+        </article>
+
+        <article class="surface-card chart-card">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">TREN SUHU</p>
+              <h2>Suhu Panel Uji</h2>
+            </div>
+            <span class="chart-legend">
+              <i class="legend-orange"></i> Panel B
+            </span>
+          </div>
+          <canvas id="temperatureChart" aria-label="Grafik suhu panel uji"></canvas>
+        </article>
+      </section>
+
+      <section class="bottom-grid">
+        <article class="surface-card method-card">
+          <p class="eyebrow">METODE PERHITUNGAN</p>
+          <h2>Bagaimana Indikasi Shading Dihitung?</h2>
+          <div class="formula">Daya = Tegangan × Arus</div>
+          <div class="formula">
+            Penurunan daya (%) =
+            ((P<sub>A</sub> − P<sub>B</sub>) / P<sub>A</sub>) × 100%
+          </div>
+          <p class="small-note">
+            Bandingkan kedua panel pada waktu, orientasi, kemiringan,
+            dan kondisi penyinaran yang sama. Perbedaan suhu serta
+            karakteristik panel juga dapat memengaruhi hasil.
+          </p>
+        </article>
+
+        <article class="surface-card settings-card">
+          <p class="eyebrow">SUMBER DATA</p>
+          <h2>Mode Dashboard</h2>
+          <p>
+            Dashboard secara bawaan memakai <strong>data simulasi</strong>.
+            Untuk membaca ESP32, ubah alamat endpoint di
+            <code>script.js</code> dan aktifkan mode ESP32.
+          </p>
+          <div class="mode-row">
+            <span id="modeLabel" class="mode-label">SIMULASI AKTIF</span>
+            <span class="small-note">Data simulasi bukan hasil sensor nyata.</span>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      <span>Solar Shading Monitor · Prototipe pemantauan panel surya</span>
+      <span>ESP32 · INA219 × 2 · DS18B20 × 1</span>
+    </footer>
+  </div>
+</body>
+</html>
